@@ -13,15 +13,13 @@ interface IEmployee {
 interface IProps { }
 interface IState {
     type: String;
-    isDisplay: Boolean;
+    isTask: Boolean;
     fname: String;
-    prevdate: String;
-    currdate: String;
     statid: Number;
     data: Array<IEmployee>;
 }
 
-const tableColumns = [
+const tableColumnsTask = [
     {
         title: 'First Name',
         dataIndex: 'Fname',
@@ -40,17 +38,29 @@ const tableColumns = [
     },
 ];
 
+const tableColumnsName = [
+    {
+        title: 'First Name',
+        dataIndex: 'Fname',
+        key: 'Fname',
+        render: (text: String) => <Text strong>{text}</Text>
+    },
+    {
+        title: 'Station ID',
+        dataIndex: 'StatID',
+        key: 'StatID',
+    },
+];
+
 class EmployeeTaskView extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
         this.state = {
             fname: "",
-            prevdate: "",
-            currdate: "",
             statid: 0,
-            isDisplay: true,
-            type: "display",
+            isTask: true,
+            type: "task",
             data: [],
         }
 
@@ -58,7 +68,7 @@ class EmployeeTaskView extends React.Component<IProps, IState> {
     }
 
     onSubmit() {
-        if (this.state.isDisplay) {
+        if (this.state.isTask) {
             fetch("http://localhost:3001/display/employee?fname=" + this.state.fname, {
                 method: 'GET',
                 headers: {
@@ -75,45 +85,38 @@ class EmployeeTaskView extends React.Component<IProps, IState> {
                     message.success("Search successful!");
                 })
         } else {
-            fetch(`http://localhost:3001/update/task`, {
-                method: 'POST',
+            fetch(`http://localhost:3001/display/name?fname=${this.state.fname}&statid=${this.state.statid}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    fname: this.state.fname,
-                    prevdate: this.state.prevdate,
-                    currdate: this.state.currdate,
-                    statid: this.state.statid,
-                })
             }).then(res => res.json())
                 .then((res) => {
                     console.log(res);
 
-                    if (res.changedRows > 0) {
-                        message.success("Update success!");
-                        message.info(`Updated ${res.changedRows} rows`);
-                    } else {
-                        message.warning("Nothing updated");
-                    }
+                    this.setState({
+                        data: res
+                    })
+
+                    message.success("Search successful!");
                 })
         }
     }
 
     render() {
         return <div className="site-layout-content">
-            <Title>Manage Employee Tasks</Title>
+            <Title>View Employee Tasks</Title>
             <Title level={2}>There are update and display operations</Title>
             <p>For display, enter the employee name, and it will display all the tasks performed, how long they took, the dates</p>
-            <p>For update, you can update the old date the task was completed to the new date by entering the old date, and the station ID where the task was done, and who did the task.</p>
+            <p>For update, you can add information for a new task that was completed.</p>
             <Radio.Group value={this.state.type} onChange={(e) => {
                 this.setState({
-                    type: e.target.value === "display" ? "display" : "update",
-                    isDisplay: e.target.value === "display" ? true : false
+                    type: e.target.value === "task" ? "task" : "name",
+                    isTask: e.target.value === "task" ? true : false
                 });
             }}>
-                <Radio.Button value="display">Display</Radio.Button>
-                <Radio.Button value="update">Update</Radio.Button>
+                <Radio.Button value="task">Task</Radio.Button>
+                <Radio.Button value="name">Name</Radio.Button>
             </Radio.Group>
 
             <br />
@@ -126,8 +129,6 @@ class EmployeeTaskView extends React.Component<IProps, IState> {
                     console.log(allValues)
                     this.setState({
                         fname: allValues.fname,
-                        prevdate: allValues.prevdate,
-                        currdate: allValues.currdate,
                         statid: allValues.statid,
                     })
                 }}
@@ -139,28 +140,16 @@ class EmployeeTaskView extends React.Component<IProps, IState> {
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    label="Previous Task Date"
-                    name="prevdate"
-                    rules={[{ required: this.state.isDisplay ? false : true, message: 'Please input a date' }]}>
-                    <DatePicker format="YYYY-MM-DD" disabled={this.state.isDisplay ? true : false} />
-                </Form.Item>
-                <Form.Item
-                    label="Current Task Date"
-                    name="currdate"
-                    rules={[{ required: this.state.isDisplay ? false : true, message: 'Please input a date' }]}>
-                    <DatePicker format="YYYY-MM-DD" disabled={this.state.isDisplay ? true : false} />
-                </Form.Item>
-                <Form.Item
                     label="Station ID"
                     name="statid"
-                    rules={[{ required: this.state.isDisplay ? false : true, message: 'Please enter a station ID' }]}>
-                    <InputNumber min={0} disabled={this.state.isDisplay ? true : false} />
+                    rules={[{ required: this.state.isTask ? false : true, message: 'Please enter a station ID' }]}>
+                    <InputNumber min={0} disabled={this.state.isTask ? true : false} />
                 </Form.Item>
                 <Form.Item>
                     <Button htmlType="submit" type="primary" icon={<CheckOutlined />}>Submit</Button>
                 </Form.Item>
             </Form>
-            <Table<IEmployee> columns={tableColumns} dataSource={this.state.data} />
+            <Table<IEmployee> columns={this.state.isTask ? tableColumnsTask : tableColumnsName} dataSource={this.state.data} />
         </div>;
     }
 }

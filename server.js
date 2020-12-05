@@ -63,6 +63,29 @@ app.get("/display/employee", (req, res) => {
      }); 
 });
 
+app.get("/display/name", (req, res) => {
+    let result = [];
+    function q() {
+        return new Promise( ( resolve, reject ) => {
+            connection.query(
+                `SELECT Fname, StatID
+                FROM task_by_employee
+                WHERE StatID=?`, 
+                req.query.statid,
+                function(error, results, fields) {
+                    if (error) return reject(error);
+                    resolve( results );
+            });
+        } )
+    } 
+
+    q().then( (r) => { 
+        result = r
+     } ). then( () => {
+        res.json(result);
+     }); 
+});
+
 app.post("/update", (req, res) => {
     let result;
     function q() {
@@ -86,44 +109,14 @@ app.post("/update", (req, res) => {
      }); 
 })
 
-app.post("/update/task", (req, res) => {
-    let result;
-    let params = req.body;
-
-    params.prevdate = params.prevdate.substring(0, 10);
-    params.currdate = params.currdate.substring(0, 10);
-
-    console.log(params)
-    function q() {
-        return new Promise( ( resolve, reject ) => {
-            connection.query(
-                `UPDATE task_by_employee
-                SET Date=?
-                WHERE Date=? AND StatID=? AND fname=?`, 
-                [params.currdate, params.prevdate, params.statid, params.fname],
-                function(error, results, fields) {
-                    if (error) return reject(error);
-                    resolve( results );
-            });
-        } )
-    } 
-
-    q().then( (r) => { 
-        result = r
-     } ). then( () => {
-         console.log(result);
-         res.json(result);
-     }); 
-})
-
 app.post("/delete", (req, res) => {
     let result;
     function q() {
         return new Promise( ( resolve, reject ) => {
             connection.query(
-                `DELETE FROM employee
-                WHERE Fname=? AND Lname=? AND SSN=?`, 
-                [req.query.fname, req.query.lname, req.query.ssn],
+                `DELETE FROM product
+                WHERE NameP=? AND StatID=?`, 
+                [req.query.pname, req.query.statid],
                 function(error, results, fields) {
                     if (error) return reject(error);
                     resolve( results );

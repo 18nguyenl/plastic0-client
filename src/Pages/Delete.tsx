@@ -7,9 +7,8 @@ const { Title, Text } = Typography;
 
 interface IProps { }
 interface IState {
-    fname: String;
-    lname: String;
-    ssn: Number;
+    pname: String;
+    statid: Number;
 }
 
 class Delete extends React.Component<IProps, IState> {
@@ -17,16 +16,15 @@ class Delete extends React.Component<IProps, IState> {
         super(props);
 
         this.state = {
-            fname: "",
-            lname: "",
-            ssn: 0,
+            pname: "",
+            statid: 0,
         }
 
         this.onSubmit = this.onSubmit.bind(this);
     }
 
     onSubmit() {
-        fetch(`http://localhost:3001/delete?fname=${this.state.fname}&lname=${this.state.lname}\&ssn=${this.state.ssn}`, {
+        fetch(`http://localhost:3001/delete?pname=${this.state.pname}&statid=${this.state.statid}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -55,30 +53,21 @@ class Delete extends React.Component<IProps, IState> {
                 onValuesChange={(changedValues, allValues) => {
                     console.log(allValues)
                     this.setState({
-                        fname: allValues.fname,
-                        lname: allValues.lname,
-                        ssn: allValues.ssn,
+                        pname: allValues.pname,
+                        statid: allValues.statid,
                     })
                 }}
             >
-                <Input.Group>
-                    <Form.Item
-                        label="First Name"
-                        name="fname"
-                        rules={[{ required: true, message: 'Please input an employee first name'}]}>                            
-                            <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Last Name"
-                        name="lname"
-                        rules={[{ required: true, message: 'Please input an employee last name'}]}>                            
-                            <Input />
-                    </Form.Item>
-                </Input.Group>
                 <Form.Item
-                    label="SSN"
-                    name="ssn"
-                    rules={[{ required: true, message: 'Please input an employee SSN'}]}>                            
+                    label="Product Name"
+                    name="pname"
+                    rules={[{ required: true, message: 'Please input a product name'}]}>                            
+                        <Input />
+                </Form.Item>
+                <Form.Item
+                    label="Station ID"
+                    name="statid"
+                    rules={[{ required: true, message: 'Please input a station ID'}]}>                            
                         <InputNumber style={{ width: "60%" }} min={0} />
                 </Form.Item>
                 <Form.Item>
