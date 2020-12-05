@@ -16,6 +16,23 @@ To get started, make sure the database is set up.
 
 1. Node.js (15.3.0)
 
+# Steps for running
+
+run
+
+```bash
+$ npm install
+$ npm run build
+$ npm run serve
+```
+
+on another terminal window,
+Make sure your MySQL DB is running!
+
+```bash
+$ node serve.js
+```
+
 # Steps for development environment
 
 run
