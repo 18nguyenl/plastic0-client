@@ -106,9 +106,9 @@ class EmployeeTaskView extends React.Component<IProps, IState> {
     render() {
         return <div className="site-layout-content">
             <Title>View Employee Tasks</Title>
-            <Title level={2}>There are update and display operations</Title>
+            <Title level={2}>These are display operations</Title>
             <p>For display, enter the employee name, and it will display all the tasks performed, how long they took, the dates</p>
-            <p>For update, you can add information for a new task that was completed.</p>
+            <p>For the next display, you can add information for a new task that was completed.</p>
             <Radio.Group value={this.state.type} onChange={(e) => {
                 this.setState({
                     type: e.target.value === "task" ? "task" : "name",
@@ -136,8 +136,8 @@ class EmployeeTaskView extends React.Component<IProps, IState> {
                 <Form.Item
                     label="First Name"
                     name="fname"
-                    rules={[{ required: true, message: 'Please enter an employee\'s first name' }]}>
-                    <Input />
+                    rules={[{ required: this.state.isTask ? true : false, message: 'Please enter an employee\'s first name' }]}>
+                    <Input disabled={ this.state.isTask ? false : true }/>
                 </Form.Item>
                 <Form.Item
                     label="Station ID"

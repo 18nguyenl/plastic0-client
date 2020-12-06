@@ -1,8 +1,11 @@
-.App {
-  height: 100%;
+body {
+  min-height: 100%;
+}
 
+.App {
+  min-height: 100%;
   display: flex;
-  flex-flow: column wrap;
+  flex-direction: column;
 }
 
 .App > * {

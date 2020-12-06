@@ -45,7 +45,7 @@ class Delete extends React.Component<IProps, IState> {
     render() {
         return <div className="site-layout-content">
            <Title>Delete</Title> 
-           <p>Fire an employee</p>
+           <p>Remove a product</p>
             <Form
                 wrapperCol={{ span: 4 }}
                 name="relevant-product-info"
